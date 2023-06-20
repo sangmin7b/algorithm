@@ -12,18 +12,20 @@ using pl = pair<ll, ll>;
 int main(int argc, const char** argv) {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
-    int N;
-    cin >> N;
+    for(int i = 0; i < 3; i++){
+        int N; cin >> N;
+        ll s = 0;
+        for(int j = 0; j < N; j++){
+            ll x; cin >> x;
+            s += x;
+        }
+        if(0 < s){
+            cout << "+\n";
+        }else if(s < 0){
+            cout << "-\n";
+        }else{
+            cout << "0\n";
+        }
+    }
     return 0;
 }     
-
-#O########
-OOO#######
-#O########
-####OO####
-######O###
-###O#O####
-#OO#######
-##O#####O#
-#######OOO
-########O#
