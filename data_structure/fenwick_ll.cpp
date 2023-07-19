@@ -5,7 +5,7 @@ using vi = vector<int>;
 using vl = vector<ll>;
 
 class fenwick_tree{
- public:
+public:
     vector<ll> arr;
     int size;
     fenwick_tree(vector<ll> &nums){
@@ -47,7 +47,7 @@ class fenwick_tree{
         return query(r) - query(l-1);
     }
 
- private:
+private:
     int get_size(int n){
         int i = 1;
         while(i < n){
