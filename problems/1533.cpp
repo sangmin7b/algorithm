@@ -1,111 +1,69 @@
 #include<bits/stdc++.h>
+
 using namespace std;
-using matrix = vector<vector<int>>;
 using ll = long long;
-const int m = 1000003;
+using vi = vector<int>;
+using vl = vector<ll>;
+using vvi = vector<vi>;
+using vvl = vector<vl>;
+using pi = pair<int, int>;
+using pl = pair<ll, ll>;
+using matrix = vvi;
+
+const int MOD = 1e6 + 3;
 
 matrix mmult(const matrix &A, const matrix &B){
     matrix C(A.size(), vector<int>(B[0].size(), 0));
     for(int i=0;i<A.size();i++){
         for(int j=0;j<B[0].size();j++){
             for(int k=0;k<B.size();k++){
-                C[i][j] += ((ll)A[i][k] * B[k][j] ) % m;
-                C[i][j] %= m;
+                C[i][j] += ((ll)A[i][k] * B[k][j] ) % MOD;
+                C[i][j] %= MOD;
             }
         }
     }
     return C;
 }
 
-matrix madd(const matrix &A, const matrix &B){
-    matrix C(A.size(), vector<int>(A[0].size(), 0));
+void madd(matrix &A, const matrix &B){
     for(int i=0;i<A.size();i++){
         for(int j=0;j<A[0].size();j++){
-            C[i][j] = A[i][j] + B[i][j];
-            C[i][j] %= m;
+            A[i][j] += B[i][j];
+            A[i][j] %= MOD;
         }
     }
-    return C;
+    return;
 }
 
 int main(int argc, const char** argv) {
-    // ios::sync_with_stdio(false);
-    // cin.tie(NULL); cout.tie(NULL);
-    int n, s, e, t;
-    cin >> n >> s >> e >> t;
-    s--; e--; 
-    vector<matrix> A(7, matrix(n,vector<int>(n,0)));
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
+    int N, S, E, T;
+    cin >> N >> S >> E >> T;
+    vvi adj(5 * N, vi(5 * N));    
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){            
             char x; cin >> x;
             x -= '0';
-            if(x)
-                A[x][i][j] = 1;
-        }
-    }
-    matrix I(n,vector<int>(n,0));
-    for(int i=0;i<n;i++){
-        I[i][i] = 1;
-    }
-    matrix O(n, vector<int>(n, 0));
-    function<matrix(int)> init = [&](int x){
-        if(x == 6){
-            return I;
-        }
-        matrix result(n ,vector<int>(n,0));
-        for(int i=1;i<=5;i++){
-            if(i + x > 6)
-                break;
-            result = madd(result, mmult(A[i], init(x+i)));
-        }
-        return result;
-    };
-    A[6] = init(0);
-    int max_l = 0;
-    int t2 = t;
-    while(t2){
-        max_l++;
-        t2 /= 2;
-    }
-    vector<matrix> pows(max_l+1);
-    pows[0] = I;
-    pows[1] = A[6];
-    for(int i=2;i<max_l+1;i++){
-        pows[i] = mmult(pows[i-1],pows[i-1]);
-    }    
-    function<matrix(int)> pow = [&](int x){
-        matrix result = pows[0];
-        int i = 1;
-        while(x){
-            if(x%2){
-                result = mmult(result, pows[i]);
+            if(0 < x){
+                adj[5 * i][5 * j + x - 1] = 1;
             }
-            i++;
-            x /= 2;
-        }
-        return result;
-    };
-    function<matrix(int)> solve = [&](int x){
-        if(x == 0)
-            return I;
-        if(x % 6 == 0)
-            return pow(x/6);
-        matrix result = O;
-        for(int i=1;i<=5;i++){
-            if(x < i)
-                break;
-            result = madd(result, mmult(A[i], mmult(pow((x-i)/6), solve((x-i) % 6))));
-        }
-        return result;
-    };
-    matrix result = solve(t);
-    int ans = result[s][e];
-    cout << ans << endl;
-    for(auto v: result){
-        for(auto i: v){
-            cout << i << " ";
-        }
-        cout << "\n";
+        }        
     }
+    for(int i=0;i<N;i++){
+        for(int j=1;j<5;j++){
+            adj[5*i+j][5*i+j-1] = 1;
+        }
+    }
+    vvi ans(5 * N, vi(5 * N, 0));
+    for(int i=0;i<5*N;i++){
+        ans[i][i] = 1;
+    }
+    while(0 < T){
+        if((T & 1) == 1){
+            ans = mmult(ans, adj);
+        }
+        adj = mmult(adj, adj);
+        T /= 2;
+    }
+    cout << ans[5*(S-1)][5*(E-1)] << "\n";
     return 0;
-}
+}     

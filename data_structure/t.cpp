@@ -13,14 +13,14 @@ int main(int argc, const char** argv) {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    int N = 0;
-    cin >> N;
+    int N = 100000;
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine gen(seed);
+    uniform_int_distribution<int> distribution (1,6);
+    int start = 0;
     for(int i=0;i<N;i++){
-        cout << i % 10;
-    }
-    cout << "\n";
-    for(int i=0;i<N;i++){
-        cout << (i + 3) % 10;
+        cout << start << "\n";
+        start += distribution(gen);
     }
     return 0;
 }     

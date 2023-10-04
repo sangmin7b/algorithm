@@ -9,20 +9,19 @@ using vvl = vector<vl>;
 using pi = pair<int, int>;
 using pl = pair<ll, ll>;
 
-ll lcm(ll a, ll b){
-    return a / __gcd(a, b) * b;
-}
-
 int main(int argc, const char** argv) {
     ios::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
-    ll x = 1;
-    ll prev = 0;
-    for(int i=1;i<100;i++){
-        x = lcm(x, i);
-        if(x > prev + 10000){
-            cout << i << " " << x << "\n";
-        }
-    }    
+    int N; cin >> N;
+    for(int i = 0; i < N - 1; i++){
+        int x; cin >> x;
+    }
+    vl psum(N);
+    for(auto &x: psum) cin >> x;
+    sort(psum.begin(), psum.end(), greater<ll>());
+    for(int i = 0; i < N - 1; i++){
+        psum[i + 1] += psum[i];
+    }
+    for(auto x: psum) cout << x << "\n";
     return 0;
 }     
